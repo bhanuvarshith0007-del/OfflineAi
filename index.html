@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Offline Nature & Health Assistant 🌿</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+
+<div class="input-section">
+  <textarea id="queryInput" rows="3" placeholder="Type your question or keyword here..."></textarea>
+  <button id="searchBtn">🔍 Search</button>
+</div>
+
+<div class="voice-section">
+  <button id="voiceBtn" title="Start/Stop Voice Input">🎤 Voice Input</button>
+  <div id="voiceStatus"></div>
+</div>
+
+<div class="camera-section">
+  <video id="video" autoplay playsinline muted></video>
+  <button id="switchCamBtn">🔄 Switch Camera</button>
+  <button id="captureBtn">📸 Capture Image</button>
+  <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
+</div>
+
+<div id="results">
+  <h2>Results:</h2>
+  <div id="output">No results yet.</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.6.0/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.0/dist/mobilenet.min.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>
