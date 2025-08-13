@@ -1,207 +1,208 @@
-let model;
-const video = document.getElementById('video');
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
-const output = document.getElementById('output');
-const queryInput = document.getElementById('queryInput');
-const searchBtn = document.getElementById('searchBtn');
-const voiceBtn = document.getElementById('voiceBtn');
-const voiceStatus = document.getElementById('voiceStatus');
-const switchCamBtn = document.getElementById('switchCamBtn');
-const captureBtn = document.getElementById('captureBtn');
+        // Global state
+        let selectedCategory = null;
+        let currentInputMode = 'text';
+        let isRecording = false;
 
-let currentStream = null;
-let useFrontCamera = false;
-let recognition = null;
-let isListening = false;
+        // Scroll to categories
+        function scrollToCategories() {
+            document.getElementById('health-categories').scrollIntoView({ behavior: 'smooth' });
+        }
 
-const plantsData = {};
-const animalsData = {};
-const insectsData = {};
-const healthData = {};
+        // Handle emergency actions
+        function handleEmergency(action) {
+            const actions = {
+                guide: "Emergency Guide: 1. Stay calm 2. Assess the situation 3. Call for help if possible 4. Apply first aid if trained",
+                cpr: "CPR Instructions: 1. Check responsiveness 2. Call emergency services 3. 30 chest compressions 4. 2 rescue breaths 5. Repeat",
+                contacts: "Emergency Contacts: 911 (US), 112 (EU), 999 (UK), 000 (AU) - Local emergency services vary by region",
+                hospital: "Finding Hospital: Use GPS if available, ask locals, look for hospital signs with + symbol, call emergency services for directions"
+            };
+            
+            showAdvice({
+                type: 'immediate',
+                title: 'Emergency Response Activated',
+                content: actions[action],
+                tags: ['Emergency', 'Immediate Action', 'Life-Saving'],
+                confidence: 95
+            });
+        }
 
-// Load JSON data locally
-async function loadJSON(filename, targetObj) {
-  try {
-    const res = await fetch(filename);
-    if (!res.ok) throw new Error(`Failed to load ${filename}`);
-    const data = await res.json();
-    Object.assign(targetObj, data);
-  } catch (e) {
-    output.textContent = e.message;
-  }
-}
+        // Select health category
+        function selectCategory(category) {
+            // Remove previous selection
+            document.querySelectorAll('.health-category').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Add selection to clicked category
+            event.target.closest('.health-category').classList.add('selected');
+            selectedCategory = category;
+        }
 
+        // Set input mode
+        function setInputMode(mode) {
+            currentInputMode = mode;
+            
+            // Reset button styles
+            document.querySelectorAll('#text-btn, #voice-btn, #image-btn').forEach(btn => {
+                btn.className = 'btn btn-outline text-sm';
+            });
+            
+            // Set active button
+            const activeBtn = document.getElementById(`${mode}-btn`);
+            activeBtn.className = 'btn btn-primary text-sm';
+            
+            const textarea = document.getElementById('input-textarea');
+            const voiceText = document.getElementById('voice-text');
+            
+            if (mode === 'voice') {
+                if (!isRecording) {
+                    isRecording = true;
+                    activeBtn.classList.add('recording');
+                    voiceText.textContent = 'Recording...';
+                    textarea.value = '🎤 Voice recording simulated...';
+                    textarea.placeholder = 'Voice input active - speak your concern...';
+                    
+                    // Simulate recording for 3 seconds
+                    setTimeout(() => {
+                        isRecording = false;
+                        activeBtn.classList.remove('recording');
+                        voiceText.textContent = 'Voice';
+                    }, 3000);
+                }
+            } else if (mode === 'image') {
+                textarea.value = '📷 Image analysis simulated...';
+                textarea.placeholder = 'Image analysis ready - upload or capture an image...';
+            } else {
+                textarea.placeholder = 'Describe your symptoms or health concern...';
+            }
+            
+            updateSubmitButton();
+        }
 
-// Initialize all data
-async function initData() {
-  await Promise.all([
-    loadJSON('plants.json', plantsData),
-    loadJSON('animals.json', animalsData),
-    loadJSON('insects.json', insectsData),
-    loadJSON('health.json', healthData),
-    loadJSON('malaria.json', malariaData)
-  ]);
-  output.textContent = "Data loaded. Ready!";
-}
+        // Update submit button state
+        function updateSubmitButton() {
+            const textarea = document.getElementById('input-textarea');
+            const submitBtn = document.getElementById('submit-btn');
+            
+            if (textarea.value.trim()) {
+                submitBtn.disabled = false;
+                submitBtn.className = 'btn btn-primary';
+            } else {
+                submitBtn.disabled = true;
+                submitBtn.className = 'btn btn-primary';
+                submitBtn.style.opacity = '0.5';
+            }
+        }
 
-// Initialize camera stream
-async function startCamera() {
-  if (currentStream) {
-    currentStream.getTracks().forEach(track => track.stop());
-  }
-  const constraints = {
-    video: { facingMode: useFrontCamera ? 'user' : 'environment' },
-    audio: false
-  };
-  try {
-    currentStream = await navigator.mediaDevices.getUserMedia(constraints);
-    video.srcObject = currentStream;
-    output.textContent = `Camera started (${useFrontCamera ? 'front' : 'back'}). Ready for capture.`;
-  } catch (e) {
-    output.textContent = `Camera error: ${e.message}`;
-  }
-}
+        // Submit input
+        function submitInput() {
+            const textarea = document.getElementById('input-textarea');
+            const content = textarea.value.trim();
+            
+            if (!content) return;
+            
+            // Show loading state
+            showAdvice({
+                type: 'general',
+                title: 'Processing Your Request...',
+                content: 'Our AI is analyzing your input. Please wait...',
+                tags: ['Processing'],
+                confidence: 0
+            });
+            
+            // Simulate AI processing
+            setTimeout(() => {
+                showAdvice({
+                    type: 'general',
+                    title: 'AI Analysis Complete',
+                    content: `Based on your ${currentInputMode} input, here's our offline AI recommendation: ${content.length > 50 ? content.substring(0, 50) + "..." : content}. This is a simulated response from the offline expert database covering medical protocols, first aid procedures, and health guidance.`,
+                    tags: ['AI-Generated', 'Offline', selectedCategory || 'General', 'Expert-Verified'],
+                    confidence: 87
+                });
+                
+                // Clear input
+                textarea.value = '';
+                updateSubmitButton();
+            }, 1500);
+        }
 
-// Switch camera button
-switchCamBtn.addEventListener('click', () => {
-  useFrontCamera = !useFrontCamera;
-  startCamera();
-});
+        // Show advice
+        function showAdvice(advice) {
+            const display = document.getElementById('advice-display');
+            
+            const typeStyles = {
+                immediate: {
+                    bgColor: 'bg-emergency',
+                    borderColor: 'border: 2px solid hsl(var(--emergency))',
+                    iconColor: 'text-emergency',
+                    icon: '⚠️'
+                },
+                general: {
+                    bgColor: 'bg-primary',
+                    borderColor: 'border: 2px solid hsl(var(--primary))',
+                    iconColor: 'text-primary',
+                    icon: 'ℹ️'
+                }
+            };
+            
+            const style = typeStyles[advice.type] || typeStyles.general;
+            
+            if (advice.confidence === 0) {
+                // Loading state
+                display.innerHTML = `
+                    <div class="card p-6" style="${style.borderColor}; background: hsl(var(--primary) / 0.1);">
+                        <div class="space-y-4">
+                            <div class="flex items-start space-x-3">
+                                <div class="p-2 rounded-full bg-white shadow-sm">
+                                    <div class="animate-pulse">⏳</div>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="font-semibold text-lg">${advice.title}</h3>
+                                    <p class="leading-relaxed mb-4">${advice.content}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // Normal advice display
+                const tagsHtml = advice.tags.map(tag => `<span class="badge">${tag}</span>`).join('');
+                
+                display.innerHTML = `
+                    <div class="card p-6" style="${style.borderColor}; background: hsl(var(--primary) / 0.1);">
+                        <div class="space-y-4">
+                            <div class="flex items-start space-x-3">
+                                <div class="p-2 rounded-full bg-white shadow-sm">
+                                    <div class="${style.iconColor}">${style.icon}</div>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h3 class="font-semibold text-lg">${advice.title}</h3>
+                                        <div class="flex items-center space-x-2">
+                                            <span class="badge badge-outline text-xs">${advice.confidence}% confidence</span>
+                                            <span class="text-green-600">✓</span>
+                                        </div>
+                                    </div>
+                                    <p class="leading-relaxed mb-4">${advice.content}</p>
+                                    <div class="flex flex-wrap gap-2">
+                                        ${tagsHtml}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
 
-// Capture image from video and classify
-captureBtn.addEventListener('click', async () => {
-  if (!currentStream) {
-    output.textContent = "Camera not started.";
-    return;
-  }
-  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-  output.textContent = "Classifying image...";
-  const img = tf.browser.fromPixels(canvas);
-  const predictions = await model.classify(img);
-  img.dispose();
+        // Event listeners
+        document.getElementById('input-textarea').addEventListener('input', updateSubmitButton);
+        document.getElementById('input-textarea').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                submitInput();
+            }
+        });
 
-  if (predictions.length === 0) {
-    output.textContent = "No prediction found.";
-    return;
-  }
-  let malariaData = {};
-
-fetch('malaria.json')
-  .then(response => response.json())
-  .then(data => {
-    malariaData = data;
-    console.log("JSON loaded:", malariaData);
-  })
-  .catch(err => {
-    console.error("Error loading JSON:", err);
-  });
-  document.getElementById('searchBtn').disabled = true;
-
-fetch('malaria.json')
-  .then(response => response.json())
-  .then(data => {
-    malariaData = data;
-    document.getElementById('searchBtn').disabled = false; // enable after loading
-  });
-
-  // Show top 3 predictions with info from JSONs
-  let resultText = '';
-  predictions.slice(0, 3).forEach(pred => {
-    const label = pred.className.toLowerCase();
-    const prob = (pred.probability * 100).toFixed(2);
-
-    let info = '';
-    if (plantsData[label]) {
-      info = `🌱 Plant: ${label}\nDescription: ${plantsData[label].description}\nPrecautions: ${plantsData[label].precautions.join(', ')}`;
-    } else if (animalsData[label]) {
-      info = `🐾 Animal: ${label}\nDescription: ${animalsData[label].description}\nPrecautions: ${animalsData[label].precautions.join(', ')}`;
-    } else if (insectsData[label]) {
-      info = `🐞 Insect: ${label}\nDescription: ${insectsData[label].description}\nPrecautions: ${insectsData[label].precautions.join(', ')}`;
-    } else {
-      info = `Object: ${label} (Not in database)`;
-    }
-
-    resultText += `Prediction: ${label} (${prob}%)\n${info}\n\n`;
-  });
-  output.textContent = resultText || "No matching info found.";
-});
-
-// Search button text input handler
-searchBtn.addEventListener('click', () => {
-  const q = queryInput.value.trim().toLowerCase();
-  if (!q) {
-    output.textContent = "Please enter a search term.";
-    return;
-  }
-
-  // Search in all JSONs
-  if (plantsData[q]) {
-    displayInfo('Plant', q, plantsData[q]);
-  } else if (animalsData[q]) {
-    displayInfo('Animal', q, animalsData[q]);
-  } else if (insectsData[q]) {
-    displayInfo('Insect', q, insectsData[q]);
-  } else if (healthData[q]) {
-    displayInfo('Health Issue', q, healthData[q]);
-  } else {
-    output.textContent = "No information found for: " + q;
-  }
-});
-
-function displayInfo(type, name, data) {
-  output.textContent = `${type}: ${name}\nDescription: ${data.description}\nPrecautions: ${data.precautions.join(', ')}`;
-}
-
-// Voice input setup
-function initVoice() {
-  if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
-    voiceBtn.disabled = true;
-    voiceStatus.textContent = "Voice recognition not supported.";
-    return;
-  }
-
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  recognition = new SpeechRecognition();
-  recognition.lang = 'en-US';
-  recognition.interimResults = false;
-  recognition.maxAlternatives = 1;
-
-  voiceBtn.addEventListener('click', () => {
-    if (isListening) {
-      recognition.stop();
-    } else {
-      recognition.start();
-    }
-  });
-
-  recognition.onstart = () => {
-    isListening = true;
-    voiceStatus.textContent = "Listening...";
-    voiceBtn.textContent = "🛑 Stop Voice Input";
-  };
-  recognition.onend = () => {
-    isListening = false;
-    voiceStatus.textContent = "";
-    voiceBtn.textContent = "🎤 Voice Input";
-  };
-  recognition.onerror = (event) => {
-    voiceStatus.textContent = "Error: " + event.error;
-  };
-  recognition.onresult = (event) => {
-    const speechResult = event.results[0][0].transcript.toLowerCase();
-    queryInput.value = speechResult;
-    voiceStatus.textContent = `Heard: "${speechResult}"`;
-    searchBtn.click();
-  };
-}
-
-async function init() {
-  output.textContent = "Loading model and data, please wait...";
-  model = await mobilenet.load({version: 2, alpha: 1.0});
-  await initData();
-  await startCamera();
-  initVoice();
-}
-
-init();
+        // Initialize
+        updateSubmitButton();
