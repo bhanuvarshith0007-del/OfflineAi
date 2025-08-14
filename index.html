@@ -1,283 +1,665 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Health Without Signal - AI-Powered Offline Emergency Response</title>
-    <meta name="description" content="Offline AI health app providing emergency medical, plant, and women's health guidance through voice, image, and text input. Works without internet connectivity.">
-    <meta name="author" content="Smart Health Team">
-    <meta name="keywords" content="offline health app, AI medical advice, emergency response, PCOD care, plant health, women's health, offline medical guidance">
-    
-    <meta property="og:title" content="Smart Health Without Signal - AI Emergency Response">
-    <meta property="og:description" content="AI-powered offline health guidance for medical, plant, and women's health emergencies. Multi-modal input with expert database.">
-    <meta property="og:type" content="website">
-    
-    
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, user-scalable=no"
+  />
+  <title>Smart Health Without Signal — Single File (Mobile)</title>
+  <meta
+    name="description"
+    content="Offline AI-like health helper with CPR guide, Hyderabad emergency numbers, Medical/Plant/Women guidance, text/voice/camera input — all in one HTML file."
+  />
+  <style>
+    /* ======= DESIGN SYSTEM (utility-style, phone-first) ======= */
+    :root{
+      --bg: 210 20% 98%;
+      --fg: 215 25% 18%;
+      --card: 0 0% 100%;
+      --muted: 210 20% 95%;
+      --primary: 200 100% 45%;
+      --primary-2: 200 100% 60%;
+      --accent: 145 65% 48%;
+      --emergency: 0 85% 58%;
+      --border: 210 20% 88%;
+      --radius: 14px;
+      --shadow: 0 8px 24px hsl(215 25% 10% / .08);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:hsl(var(--bg));color:hsl(var(--fg));font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+    img,video{max-width:100%}
+    .container{max-width:1000px;margin:auto;padding:0 16px}
+    .hero{
+      position:relative;overflow:hidden;color:#fff;
+      background: linear-gradient(135deg,hsl(var(--primary)),hsl(var(--primary-2)));
+    }
+    .hero .wrap{padding:48px 16px}
+    h1{font-size:28px;margin:0 0 8px}
+    p.lead{opacity:.95;margin:0 0 12px}
+    .btn{
+      -webkit-tap-highlight-color: transparent;
+      display:inline-flex;align-items:center;justify-content:center;
+      gap:8px;padding:12px 18px;border-radius:999px;border:1px solid transparent;
+      font-weight:600;cursor:pointer;transition:.2s;user-select:none
+    }
+    .btn-primary{background:#fff;color:hsl(var(--primary));border-color:#ffffff20}
+    .btn-primary:active{transform:scale(.98)}
+    .btn-ghost{background:transparent;border-color:#ffffff50;color:#fff}
+    .grid{display:grid;gap:16px}
+    .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    @media(min-width:720px){.grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}}
+    .card{
+      background:hsl(var(--card));border:1px solid hsl(var(--border));
+      border-radius:var(--radius);box-shadow:var(--shadow)
+    }
+    .section{padding:20px 0}
+    .pad{padding:16px}
+    .title{font-size:22px;font-weight:800;margin:0 0 4px}
+    .muted{color:#5f6b7a}
+    .pill{font-size:12px;border-radius:999px;padding:6px 10px;border:1px solid hsl(var(--border));display:inline-flex;gap:6px;align-items:center}
+    .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .textarea, .input{
+      width:100%;padding:12px 14px;border-radius:12px;border:1px solid hsl(var(--border));
+      background:hsl(var(--bg));font-family:inherit
+    }
+    .actions{display:flex;gap:8px;justify-content:center}
+    .chip{font-size:12px;padding:6px 10px;border-radius:999px;background:hsl(var(--muted));color:#2b2b2b}
+    .list{display:flex;flex-direction:column;gap:10px}
+    .tap{display:flex;gap:12px;align-items:flex-start;padding:12px;border-radius:12px;border:1px solid hsl(var(--border));cursor:pointer}
+    .tap:active{transform:scale(.99)}
+    .ok{color: #16a34a}
+    /* accents */
+    .emg{background: linear-gradient(135deg,hsl(var(--emergency)),#ff7a7a);color:#fff}
+    .health-med{background: linear-gradient(135deg,hsl(var(--primary)),hsl(var(--primary-2)));color:#fff}
+    .health-plant{background: hsl(var(--accent));color:#fff}
+    .health-women{background: linear-gradient(135deg,#ff6db0,#ff9acb);color:#fff}
+    .icon{
+      width:36px;height:36px;display:inline-grid;place-items:center;border-radius:10px;background:#fff1;border:1px solid #fff3
+    }
+    .hidden{display:none !important}
+    /* floating helper */
+    .bar{display:flex;gap:8px}
+    .small{font-size:13px}
+    .center{text-align:center}
+    .mb8{margin-bottom:8px}.mb12{margin-bottom:12px}.mb16{margin-bottom:16px}.mb20{margin-bottom:20px}
+    .mt8{margin-top:8px}.mt12{margin-top:12px}
+    .strong{font-weight:700}
+    .k{display:inline-block;padding:3px 8px;border-radius:8px;background:#00000008;border:1px solid hsl(var(--border));font-size:12px}
+    .kbd{display:inline-flex;gap:6px;align-items:center}
+    .tag{display:inline-flex;gap:6px;align-items:center;border-radius:10px;padding:6px 10px;border:1px solid hsl(var(--border))}
+    .call a{color:inherit;text-decoration:none}
+    .sticky-footer{position:sticky;bottom:0;background:hsl(var(--card));padding:10px;border-top:1px solid hsl(var(--border));border-bottom-left-radius:var(--radius);border-bottom-right-radius:var(--radius)}
+  </style>
 </head>
 <body>
-    <div class="min-h-screen gradient-subtle">
-        <!-- Hero Section -->
-        <div class="relative overflow-hidden">
-            <div class="absolute inset-0 hero-overlay"></div>
-            <div class="relative bg-cover bg-center py-20" style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 1200 600%22><rect fill=%22%234a90e2%22 width=%221200%22 height=%22600%22/><circle fill=%22%23ffffff%22 fill-opacity=%22.1%22 cx=%22200%22 cy=%22150%22 r=%2250%22/><circle fill=%22%23ffffff%22 fill-opacity=%22.1%22 cx=%22800%22 cy=%22300%22 r=%2275%22/><circle fill=%22%23ffffff%22 fill-opacity=%22.1%22 cx=%221000%22 cy=%22100%22 r=%2240%22/></svg>');">
-                <div class="container text-center relative z-10">
-                    <div class="max-w-4xl mx-auto text-white space-y-6">
-                        <div class="flex items-center justify-center space-x-3 mb-4">
-                            <svg class="h-12 w-12 animate-float" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 1l3.104 6.728 7.396.855-5.25 5.253 1.146 7.364L12 17.77l-6.396 3.43 1.146-7.364L1.5 8.583l7.396-.855L12 1z"/>
-                            </svg>
-                            <h1 class="text-5xl font-bold">Smart Health Without Signal</h1>
-                        </div>
-                        <p class="text-xl opacity-90 leading-relaxed">
-                            AI-Powered Emergency Response for the Unconnected. 
-                            Get instant health guidance with voice, image, or text input - completely offline.
-                        </p>
-                        <div class="flex items-center justify-center space-x-8 pt-4">
-                            <div class="flex items-center space-x-2 text-sm">
-                                <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.07 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/>
-                                </svg>
-                                <span>100% Offline</span>
-                            </div>
-                            <div class="flex items-center space-x-2 text-sm">
-                                <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-5 0V6.5a1 1 0 0 0-2 0v13a3.5 3.5 0 0 0 7 0v-15a4.5 4.5 0 0 0-9 0v13a2 2 0 0 0 4 0V6.5a.5.5 0 0 1 1 0v13a1 1 0 0 1-2 0V4.5A2.5 2.5 0 0 1 9.5 2z"/>
-                                </svg>
-                                <span>AI-Powered</span>
-                            </div>
-                            <div class="flex items-center space-x-2 text-sm">
-                                <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                                    <circle cx="12" cy="12" r="10"/>
-                                    <line x1="2" y1="12" x2="22" y2="12"/>
-                                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-                                </svg>
-                                <span>Expert Database</span>
-                            </div>
-                        </div>
-                        <button class="btn btn-hero mt-8" onclick="scrollToCategories()">
-                            Start Health Assessment
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <div class="container py-12 space-y-12">
-            <!-- Emergency Panel -->
-            <div class="card gradient-emergency text-white p-6 animate-float">
-                <div class="text-center mb-6">
-                    <h2 class="text-2xl font-bold mb-2 flex items-center justify-center space-x-2">
-                        <svg class="h-6 w-6 animate-pulse" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
-                        </svg>
-                        <span>Emergency Response</span>
-                    </h2>
-                    <p class="text-sm opacity-90">Instant offline emergency assistance</p>
-                </div>
-                
-                <div class="grid grid-cols-2 gap-4">
-                    <button class="btn btn-emergency" onclick="handleEmergency('guide')">
-                        <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
-                        </svg>
-                        <div class="text-center">
-                            <div class="font-medium text-sm">Emergency Guide</div>
-                            <div class="text-xs opacity-80">Immediate first aid steps</div>
-                        </div>
-                    </button>
-                    <button class="btn btn-emergency" onclick="handleEmergency('cpr')">
-                        <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-                        </svg>
-                        <div class="text-center">
-                            <div class="font-medium text-sm">CPR Instructions</div>
-                            <div class="text-xs opacity-80">Life-saving techniques</div>
-                        </div>
-                    </button>
-                    <button class="btn btn-emergency" onclick="handleEmergency('contacts')">
-                        <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-                        </svg>
-                        <div class="text-center">
-                            <div class="font-medium text-sm">Emergency Contacts</div>
-                            <div class="text-xs opacity-80">Quick access numbers</div>
-                        </div>
-                    </button>
-                    <button class="btn btn-emergency" onclick="handleEmergency('hospital')">
-                        <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                            <circle cx="12" cy="10" r="3"/>
-                        </svg>
-                        <div class="text-center">
-                            <div class="font-medium text-sm">Find Hospital</div>
-                            <div class="text-xs opacity-80">Nearest medical facilities</div>
-                        </div>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Health Categories -->
-            <div id="health-categories" class="space-y-8">
-                <div class="text-center">
-                    <h2 class="text-3xl font-bold mb-4">Choose Your Health Category</h2>
-                    <p class="text-muted-foreground">Select the area you need assistance with</p>
-                </div>
-                
-                <div class="grid md:grid-cols-3 gap-6">
-                    <div class="card health-medical p-6 cursor-pointer transition-all health-category" onclick="selectCategory('medical')">
-                        <div class="flex flex-col items-center text-center space-y-4">
-                            <div class="p-3 rounded-full bg-white opacity-20">
-                                <svg class="h-8 w-8" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <h3 class="font-semibold text-lg mb-2">Medical Health</h3>
-                                <p class="text-sm opacity-90">General health, symptoms, and medical guidance</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card health-plant p-6 cursor-pointer transition-all health-category" onclick="selectCategory('plant')">
-                        <div class="flex flex-col items-center text-center space-y-4">
-                            <div class="p-3 rounded-full bg-white opacity-20">
-                                <svg class="h-8 w-8" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M7 20h10v-2a6 6 0 0 0-12 0v2zM12 4a6 6 0 0 1 6 6c0 1-3 6-6 6s-6-5-6-6a6 6 0 0 1 6-6z"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <h3 class="font-semibold text-lg mb-2">Plant Health</h3>
-                                <p class="text-sm opacity-90">Plant diseases, care, and agricultural advice</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card health-women p-6 cursor-pointer transition-all health-category" onclick="selectCategory('women')">
-                        <div class="flex flex-col items-center text-center space-y-4">
-                            <div class="p-3 rounded-full bg-white opacity-20">
-                                <svg class="h-8 w-8" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zM4 22v-2h16v2H4zM18 10.5V9l-1-5H7l-1 5v1.5L4 12v8h2v-6h2v6h8v-6h2v6h2v-8l-2-1.5z"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <h3 class="font-semibold text-lg mb-2">Women's Health</h3>
-                                <p class="text-sm opacity-90">PCOD/PCOS, menstrual care, and women's wellness</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Multi-Modal Input -->
-            <div class="space-y-6">
-                <div class="text-center">
-                    <h2 class="text-2xl font-bold mb-2">Describe Your Concern</h2>
-                    <p class="text-muted-foreground">
-                        Use text, voice, or image input for AI-powered health guidance
-                    </p>
-                </div>
-                <div class="card p-6">
-                    <div class="space-y-4">
-                        <div class="flex justify-center space-x-2">
-                            <button id="text-btn" class="btn btn-primary text-sm" onclick="setInputMode('text')">
-                                <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" style="margin-right: 0.5rem;">
-                                    <path d="M5 4v3h5.5v12h3V7H19V4z"/>
-                                </svg>
-                                Text
-                            </button>
-                            <button id="voice-btn" class="btn btn-outline text-sm" onclick="setInputMode('voice')">
-                                <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" style="margin-right: 0.5rem;">
-                                    <path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/>
-                                </svg>
-                                <span id="voice-text">Voice</span>
-                            </button>
-                            <button id="image-btn" class="btn btn-outline text-sm" onclick="setInputMode('image')">
-                                <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" style="margin-right: 0.5rem;">
-                                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2v11z"/>
-                                    <circle cx="12" cy="13" r="4"/>
-                                </svg>
-                                Image
-                            </button>
-                        </div>
-
-                        <div class="space-y-2">
-                            <textarea id="input-textarea" class="textarea" placeholder="Describe your symptoms or health concern..."></textarea>
-                            <div class="flex justify-end">
-                                <button class="btn btn-primary" onclick="submitInput()" id="submit-btn" disabled>
-                                    <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" style="margin-right: 0.5rem;">
-                                        <line x1="22" y1="2" x2="11" y2="13"/>
-                                        <polygon points="22,2 15,22 11,13 2,9 22,2"/>
-                                    </svg>
-                                    Get AI Advice
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- AI Advice Display -->
-            <div id="advice-display" class="card p-8 text-center bg-muted">
-                <div class="space-y-4">
-                    <div class="w-16 h-16 mx-auto bg-primary rounded-full flex items-center justify-center">
-                        <svg class="h-8 w-8 text-primary" fill="currentColor" viewBox="0 0 24 24">
-                            <circle cx="12" cy="12" r="10"/>
-                            <path d="M12 16v-4"/>
-                            <path d="M12 8h.01"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-medium text-muted-foreground">Ready to Help</h3>
-                        <p class="text-sm text-muted-foreground mt-2">
-                            Use the input above to describe your health concern, upload an image, or record your voice.
-                            Our AI will provide instant offline guidance.
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Features Grid -->
-            <div class="card rounded-lg p-8">
-                <h2 class="text-2xl font-bold text-center mb-8">Why Smart Health Without Signal?</h2>
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div class="text-center space-y-3">
-                        <div class="w-12 h-12 bg-primary rounded-full mx-auto flex items-center justify-center">
-                            <svg class="h-6 w-6 text-primary" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.07 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/>
-                            </svg>
-                        </div>
-                        <h3 class="font-semibold">Fully Offline</h3>
-                        <p class="text-sm text-muted-foreground">
-                            Works without internet connectivity, perfect for remote areas
-                        </p>
-                    </div>
-                    <div class="text-center space-y-3">
-                        <div class="w-12 h-12 bg-secondary rounded-full mx-auto flex items-center justify-center">
-                            <svg class="h-6 w-6 text-secondary" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-5 0V6.5a1 1 0 0 0-2 0v13a3.5 3.5 0 0 0 7 0v-15a4.5 4.5 0 0 0-9 0v13a2 2 0 0 0 4 0V6.5a.5.5 0 0 1 1 0v13a1 1 0 0 1-2 0V4.5A2.5 2.5 0 0 1 9.5 2z"/>
-                            </svg>
-                        </div>
-                        <h3 class="font-semibold">AI-Powered Analysis</h3>
-                        <p class="text-sm text-muted-foreground">
-                            Advanced keyword extraction and symptom analysis
-                        </p>
-                    </div>
-                    <div class="text-center space-y-3">
-                        <div class="w-12 h-12 bg-accent rounded-full mx-auto flex items-center justify-center">
-                            <svg class="h-6 w-6 text-accent" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-                            </svg>
-                        </div>
-                        <h3 class="font-semibold">Multi-Health Coverage</h3>
-                        <p class="text-sm text-muted-foreground">
-                            Medical, plant, and women's health in one platform
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <!-- ======= HERO ======= -->
+  <header class="hero">
+    <div class="container wrap">
+      <h1>Smart Health Without Signal</h1>
+      <p class="lead">AI-style, offline guidance for emergencies & everyday health. Works on your phone.</p>
+      <div class="bar mt8">
+        <button id="startBtn" class="btn btn-primary">Start Health Assessment ⤵</button>
+        <button id="toEmergency" class="btn btn-ghost">Emergency</button>
+      </div>
+      <div class="row mt8 small">
+        <span class="pill">100% Offline</span>
+        <span class="pill">Voice → Text</span>
+        <span class="pill">Camera Detect</span>
+        <span class="pill">Expert JSON DB</span>
+      </div>
     </div>
+  </header>
 
-    
+  <main class="container">
+
+    <!-- ======= EMERGENCY RESPONSE (only CPR + Contacts) ======= -->
+    <section id="emergency" class="section">
+      <div class="card pad emg">
+        <div class="row" style="justify-content:space-between;align-items:center">
+          <div>
+            <div class="title">Emergency Response</div>
+            <div class="small" style="opacity:.9">Quick, offline assistance</div>
+          </div>
+        </div>
+
+        <div class="grid grid-2 mt12">
+          <div class="tap" onclick="showCPR()">
+            <div class="icon">❤️</div>
+            <div>
+              <div class="strong">CPR Instructions</div>
+              <div class="small" style="opacity:.9">Life-saving steps, short & clear</div>
+            </div>
+          </div>
+
+          <div class="tap" onclick="showContacts()">
+            <div class="icon">📞</div>
+            <div>
+              <div class="strong">Emergency Contacts (Hyd/TG)</div>
+              <div class="small" style="opacity:.9">Tap to call: 100, 108, 112, more…</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="emgDisplay" class="hidden mt12"></div>
+    </section>
+
+    <!-- ======= HEALTH CATEGORIES ======= -->
+    <section id="health-categories" class="section">
+      <div class="grid grid-2">
+        <button class="card pad health-med" onclick="selectCategory('medical')">
+          <div class="strong mb8">Medical Health</div>
+          <div class="small">General symptoms → guidance</div>
+        </button>
+        <button class="card pad health-plant" onclick="selectCategory('plant')">
+          <div class="strong mb8">Plant Health</div>
+          <div class="small">Common diseases & care</div>
+        </button>
+        <button class="card pad health-women" onclick="selectCategory('women')">
+          <div class="strong mb8">Women’s Health</div>
+          <div class="small">PCOD/PCOS, menstrual care, wellness</div>
+        </button>
+        <button class="card pad" onclick="clearCategory()">
+          <div class="strong mb8">Clear Selection</div>
+          <div class="small">Show all results</div>
+        </button>
+      </div>
+      <div id="catHint" class="center small mt12 muted">Tip: pick a category for focused advice.</div>
+    </section>
+
+    <!-- ======= INPUT (Text / Voice / Camera) ======= -->
+    <section class="section">
+      <div class="card">
+        <div class="pad">
+          <div class="row" style="justify-content:center">
+            <button id="modeText" class="btn" onclick="setMode('text')">Text</button>
+            <button id="modeVoice" class="btn" onclick="setMode('voice')">Voice</button>
+            <button id="modeImage" class="btn" onclick="setMode('image')">Camera</button>
+          </div>
+
+          <!-- TEXT -->
+          <div id="textBox" class="mt12">
+            <textarea id="inputText" class="textarea" rows="4" placeholder="Describe symptoms or question… (e.g., ‘fever and cough 3 days’ or ‘tomato leaves with brown spots’)"></textarea>
+          </div>
+
+          <!-- VOICE -->
+          <div id="voiceBox" class="hidden mt12 center">
+            <div class="small muted mb8">Tap mic, speak, then tap again to stop.</div>
+            <div class="row" style="justify-content:center">
+              <button id="micBtn" class="btn btn-primary">🎤 Start</button>
+              <span id="recState" class="pill">Idle</span>
+            </div>
+            <textarea id="voiceOut" class="textarea mt12" rows="3" placeholder="Transcribed voice will appear here…"></textarea>
+          </div>
+
+          <!-- IMAGE -->
+          <div id="imageBox" class="hidden mt12">
+            <input id="camera" class="input" type="file" accept="image/*" capture="environment" />
+            <canvas id="preview" class="mt12" style="width:100%;border-radius:12px"></canvas>
+            <div class="small muted mt8">We’ll try to detect if this looks like a plant leaf and suggest checks.</div>
+          </div>
+        </div>
+
+        <div class="sticky-footer">
+          <button id="submitBtn" class="btn btn-primary" style="width:100%">Get AI Advice</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======= OUTPUT ======= -->
+    <section class="section">
+      <div id="output" class="card pad">
+        <div class="center muted">Ready to help. Enter text, use voice, or take a photo.</div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    /* ============================================================
+       OFFLINE JSON "DATABASE" (small samples; extend as you like)
+       ============================================================ */
+    const DB = {
+      emergency: {
+        cprSteps: [
+          "Ensure scene is safe. Check responsiveness (tap & shout).",
+          "Call 112 (or ask someone). If available, get an AED.",
+          "Open airway (head tilt, chin lift). Check normal breathing (≤10 sec).",
+          "If not breathing or only gasping: Start compressions.",
+          "Chest compressions: center of chest, at least 5 cm deep, 100–120/min. Let chest recoil.",
+          "Ratio: 30 compressions, then 2 rescue breaths (if trained & willing).",
+          "Continue cycles of 30:2. If AED arrives, turn on and follow prompts.",
+          "Do not stop until the person breathes, an AED says stop, or help takes over."
+        ],
+        contactsHYD: [
+          {label:"Single Emergency (India)", number:"112"},
+          {label:"Police (India legacy)", number:"100"},
+          {label:"Ambulance (Telangana)", number:"108"},
+          {label:"Fire", number:"101"},
+          {label:"Women Helpline", number:"1091"},
+          {label:"Women Helpline (181)", number:"181"},
+          {label:"Childline", number:"1098"}
+        ]
+      },
+
+      medical: [
+        {
+          name:"Fever & Cough",
+          keys:["fever","temperature","cough","cold","flu","sore throat","throat pain"],
+          guide:[
+            "Hydrate well; rest. Consider paracetamol for fever as directed.",
+            "Watch red flags: trouble breathing, chest pain, confusion, bluish lips.",
+            "If fever >3 days or very high (>102°F/39°C), seek medical care.",
+            "Isolate if flu-like; mask to protect others."
+          ]
+        },
+        {
+          name:"Diarrhoea / Vomiting",
+          keys:["diarrhea","diarrhoea","loose motion","vomit","food poisoning","stomach bug"],
+          guide:[
+            "Oral rehydration solution (ORS) small sips frequently.",
+            "Avoid oily/spicy foods; stick to bland diet (rice/bananas/curd).",
+            "Seek care if blood in stool, high fever, severe dehydration, or in infants/elderly."
+          ]
+        },
+        {
+          name:"Headache",
+          keys:["headache","migraine","head pain"],
+          guide:[
+            "Hydration, dark/quiet room, consider paracetamol/ibuprofen if suitable.",
+            "Red flags: worst headache ever, head injury, fever + neck stiffness, weakness/vision changes → urgent care."
+          ]
+        }
+      ],
+
+      plant: [
+        {
+          name:"Tomato — Early Blight",
+          keys:["tomato","brown spots","leaf spots","target spots","tomato leaves"],
+          guide:[
+            "Remove affected leaves; avoid overhead watering.",
+            "Mulch soil; rotate crops; use disease-resistant varieties.",
+            "If severe, consider appropriate fungicide as per local guidelines."
+          ]
+        },
+        {
+          name:"Powdery Mildew (General)",
+          keys:["white powder","powdery","mildew","leaves white"],
+          guide:[
+            "Improve airflow; avoid wetting leaves.",
+            "Remove heavily infected parts; keep plants well-spaced.",
+            "Bicarbonate or labeled fungicides may help (follow instructions)."
+          ]
+        },
+        {
+          name:"Root Rot (Overwatering)",
+          keys:["yellowing","wilting","soggy soil","root rot"],
+          guide:[
+            "Reduce watering; ensure drainage.",
+            "Repot with fresh medium if pot plant; trim rotted roots.",
+            "Prevent by watering only when topsoil is dry."
+          ]
+        }
+      ],
+
+      women: [
+        {
+          name:"PCOD / PCOS — Basics",
+          keys:["pcod","pcos","irregular periods","ovarian cysts","facial hair","acne"],
+          guide:[
+            "Lifestyle: balanced diet, regular exercise, weight management.",
+            "Cycle tracking; discuss with clinician about metformin or OCPs if advised.",
+            "Watch mental health; seek guidance for fertility planning when needed."
+          ]
+        },
+        {
+          name:"Menstrual Care",
+          keys:["period pain","cramps","dysmenorrhea","menstrual","PMS"],
+          guide:[
+            "Heat pad, gentle stretching; hydration.",
+            "NSAIDs like ibuprofen at onset (if safe for you).",
+            "Seek care if bleeding very heavy (soaking >1 pad/hour), cycles <21 or >90 days, or severe pain."
+          ]
+        },
+        {
+          name:"Common Women’s Wellness",
+          keys:["vaginal discharge","UTI","burning urine","breast self exam","wellness"],
+          guide:[
+            "Unusual discharge/odor/itching → consider medical check; maintain hygiene, breathable underwear.",
+            "UTI signs: burning, urgency, lower abdominal pain → hydrate; consider medical review & urine test.",
+            "Monthly breast self-exam; schedule routine screening per age group."
+          ]
+        }
+      ]
+    };
+
+    /* ============================================================
+       STATE
+       ============================================================ */
+    let currentCategory = null;     // 'medical' | 'plant' | 'women' | null
+    let mode = 'text';              // 'text' | 'voice' | 'image'
+    let recognizing = false;        // speech state
+    let recognition;                // SpeechRecognition instance
+
+    /* ============================================================
+       HELPERS & UI
+       ============================================================ */
+    const $ = sel => document.querySelector(sel);
+    const out = $('#output');
+    const emgDisplay = $('#emgDisplay');
+
+    function scrollToCategories(){
+      document.getElementById('health-categories').scrollIntoView({behavior:'smooth', block:'start'});
+    }
+    function scrollToEmergency(){
+      document.getElementById('emergency').scrollIntoView({behavior:'smooth', block:'start'});
+    }
+
+    // Start buttons
+    $('#startBtn').addEventListener('click', scrollToCategories);
+    $('#toEmergency').addEventListener('click', scrollToEmergency);
+
+    // Category selection
+    function selectCategory(cat){
+      currentCategory = cat;
+      $('#catHint').textContent = `Selected: ${cat.toUpperCase()}. Your searches will focus on this.`;
+      flashResult(renderCategoryIntro(cat));
+    }
+    function clearCategory(){
+      currentCategory = null;
+      $('#catHint').textContent = 'Tip: pick a category for focused advice.';
+      flashResult(`<div class="center muted">Category cleared. Enter a query or choose a category.</div>`);
+    }
+
+    function renderCategoryIntro(cat){
+      if(cat==='medical'){
+        return cardBlock("How general check should be",[
+          "Check temperature, pulse, breathing, level of alertness.",
+          "Note duration & severity of symptoms; list medicines taken.",
+          "Look for red flags: breathing difficulty, chest pain, confusion, seizures, severe dehydration."
+        ]) + listByDB(DB.medical, "If you have these symptoms, guidance:");
+      }
+      if(cat==='plant'){
+        return listByDB(DB.plant, "Common plant diseases & care:");
+      }
+      if(cat==='women'){
+        return listByDB(DB.women, "Women’s health topics (PCOD/PCOS, menstrual care, wellness):");
+      }
+      return '';
+    }
+
+    function listByDB(arr, heading){
+      return `
+        <div class="mb12 strong">${heading}</div>
+        <div class="list">
+          ${arr.map(item=>`
+            <div class="tap" onclick='showTopic(${JSON.stringify(item.name)})'>
+              <div class="icon">ℹ️</div>
+              <div>
+                <div class="strong">${item.name}</div>
+                <div class="small muted">${item.guide[0]}</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>`;
+    }
+
+    function showTopic(name){
+      const pools=[...DB.medical,...DB.plant,...DB.women];
+      const item=pools.find(x=>x.name===name);
+      if(!item){return}
+      flashResult(cardBlock(item.name,item.guide));
+    }
+
+    function cardBlock(title, points){
+      return `
+        <div class="card pad">
+          <div class="title mb8">${title}</div>
+          <ul class="small">
+            ${points.map(p=>`<li class="mb8">• ${p}</li>`).join('')}
+          </ul>
+        </div>`;
+    }
+
+    function flashResult(html){
+      out.innerHTML = html;
+    }
+
+    /* ============================================================
+       EMERGENCY: CPR & CONTACTS
+       ============================================================ */
+    function showCPR(){
+  emgDisplay.classList.remove('hidden');
+  emgDisplay.innerHTML = `
+    <div class="card pad" style="background:#fff;border-color:hsl(var(--border))">
+      ${cardBlock("CPR — Step by Step", DB.emergency.cprSteps)}
+    </div>`;
+}
+
+function showContacts(){
+  emgDisplay.classList.remove('hidden');
+  const rows = DB.emergency.contactsHYD.map(c=>{
+    return `<div class="tap call" style="background:hsl(var(--muted));border-color:hsl(var(--border))">
+      <div class="icon" style="background:white;border-color:hsl(var(--border))">📞</div>
+      <div>
+        <div class="strong">${c.label}</div>
+        <div class="row small">
+          <a href="tel:${c.number}" class="tag">Call ${c.number}</a>
+          <span class="muted">Hyderabad/Telangana</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  emgDisplay.innerHTML = `
+    <div class="card pad" style="background:#fff;border-color:hsl(var(--border))">
+      <div class="title mb8">Emergency Contacts</div>
+      ${rows}
+    </div>`;
+}
+
+    /* ============================================================
+       INPUT MODES
+       ============================================================ */
+    function setMode(m){
+      mode=m;
+      // toggle active button styles
+      ['modeText','modeVoice','modeImage'].forEach(id => $('#'+id).classList.remove('btn-primary'));
+      if(m==='text') $('#modeText').classList.add('btn-primary');
+      if(m==='voice') $('#modeVoice').classList.add('btn-primary');
+      if(m==='image') $('#modeImage').classList.add('btn-primary');
+      // show/hide boxes
+      $('#textBox').classList.toggle('hidden', m!=='text');
+      $('#voiceBox').classList.toggle('hidden', m!=='voice');
+      $('#imageBox').classList.toggle('hidden', m!=='image');
+    }
+    setMode('text');
+
+    /* ---------- Voice (Web Speech API) ---------- */
+    (function initVoice(){
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const mic = $('#micBtn');
+      const state = $('#recState');
+      if(!SR){
+        mic.disabled = true;
+        state.textContent = 'Voice not supported on this browser';
+        return;
+      }
+      recognition = new SR();
+      recognition.lang = 'en-IN';
+      recognition.interimResults = true;
+      recognition.continuous = false;
+
+      mic.addEventListener('click', ()=>{
+        if(!recognizing){
+          recognition.start();
+          recognizing = true;
+          mic.textContent = '⏹ Stop';
+          state.textContent = 'Listening…';
+        }else{
+          recognition.stop();
+        }
+      });
+
+      recognition.onresult = (e)=>{
+        let finalText = '';
+        for(let i=0;i<e.results.length;i++){
+          const chunk = e.results[i][0].transcript;
+          if(e.results[i].isFinal) finalText += chunk + ' ';
+        }
+        if(finalText.trim()){
+          $('#voiceOut').value = ( $('#voiceOut').value + ' ' + finalText ).trim();
+        }
+      };
+      recognition.onend = ()=>{
+        recognizing = false;
+        mic.textContent = '🎤 Start';
+        state.textContent = 'Idle';
+      };
+      recognition.onerror = ()=>{
+        recognizing = false;
+        mic.textContent = '🎤 Start';
+        state.textContent = 'Error / Retry';
+      };
+    })();
+
+    /* ---------- Image (camera capture + simple green detector) ---------- */
+    const fileInput = $('#camera');
+    const canvas = $('#preview');
+    const ctx = canvas.getContext('2d');
+
+    fileInput.addEventListener('change', async (e)=>{
+      const file = e.target.files?.[0];
+      if(!file) return;
+      const img = new Image();
+      img.onload = ()=>{
+        const w = canvas.clientWidth || 320;
+        const scale = w / img.width;
+        const h = img.height * scale;
+        canvas.width = w; canvas.height = h;
+        ctx.drawImage(img,0,0,w,h);
+        // crude plant-leaf heuristic: % of greenish pixels
+        const data = ctx.getImageData(0,0,w,h).data;
+        let greenish=0;
+        for(let i=0;i<data.length;i+=4){
+          const r=data[i], g=data[i+1], b=data[i+2];
+          if(g>90 && g>r+10 && g>b+10) greenish++;
+        }
+        const ratio = greenish / (data.length/4);
+        let guess = ratio>0.25 ? "This looks like a leaf/plant surface. Try searching for 'leaf spots', 'powdery mildew', or crop name." :
+                  "Could not confidently detect plant leaf. You can still describe what you see in text.";
+        flashResult(cardBlock("Image Analysis (Offline heuristic)",[
+          `Greenish pixel ratio: ${(ratio*100).toFixed(1)}%`,
+          guess,
+          "Tip: enter crop name + symptom (e.g., “tomato brown spots”) and tap Get AI Advice."
+        ]));
+      };
+      img.src = URL.createObjectURL(file);
+    });
+
+    /* ============================================================
+       SEARCH ENGINE (very lightweight keyword matcher)
+       ============================================================ */
+    function normalize(t){ return (t||'').toLowerCase(); }
+    function searchAll(query){
+      const q = normalize(query);
+      const buckets = [];
+      function matchBlock(arr,label){
+        const hits = arr
+          .map(item=>{
+            const hit = item.keys.some(k=> q.includes(k.toLowerCase()));
+            const nameHit = q.includes(item.name.toLowerCase());
+            return (hit || nameHit) ? item : null;
+          })
+          .filter(Boolean);
+        if(hits.length){ buckets.push({label, hits}); }
+      }
+      // prioritize currentCategory if set
+      const order = currentCategory
+        ? [currentCategory, ...['medical','plant','women'].filter(x=>x!==currentCategory)]
+        : ['medical','plant','women'];
+
+      order.forEach(cat=>{
+        if(cat==='medical') matchBlock(DB.medical,'Medical matches');
+        if(cat==='plant')   matchBlock(DB.plant,'Plant matches');
+        if(cat==='women')   matchBlock(DB.women,'Women’s health matches');
+      });
+
+      return buckets;
+    }
+
+    function renderResults(buckets, raw){
+      if(!buckets.length){
+        flashResult(cardBlock("No direct match",[
+          "Try simpler words (e.g., 'fever cough', 'tomato leaf spots', 'period cramps').",
+          currentCategory ? `Currently focused on: ${currentCategory.toUpperCase()}` : "Tip: choose a category for better results."
+        ]) + `<div class="card pad mt12 small"><span class="muted">You searched:</span> ${escapeHTML(raw)}</div>`);
+        return;
+      }
+      let html = '';
+      buckets.forEach(b=>{
+        html += `<div class="card pad mb12"><div class="strong mb8">${b.label}</div>`;
+        b.hits.forEach(item=>{
+          html += `<div class="tap" onclick='showTopic(${JSON.stringify(item.name)})'>
+            <div class="icon">✅</div>
+            <div>
+              <div class="strong">${item.name}</div>
+              <div class="small muted">${item.guide[0]}</div>
+            </div>
+          </div>`;
+        });
+        html += `</div>`;
+      });
+      html += `<div class="small muted">Query: ${escapeHTML(raw)}</div>`;
+      flashResult(html);
+    }
+
+    function escapeHTML(s){return s.replace(/[&<>"']/g,m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+
+    /* ============================================================
+       GET AI ADVICE (text/voice/image → text search)
+       ============================================================ */
+    function gatherQuery(){
+      if(mode==='text'){
+        return $('#inputText').value.trim();
+      }else if(mode==='voice'){
+        return $('#voiceOut').value.trim();
+      }else if(mode==='image'){
+        // Encourage user to add a few words after taking photo
+        return prompt("Add a few words about the image (e.g., plant type + symptom). This helps offline search:", "")?.trim() || "";
+      }
+    }
+
+    $('#submitBtn').addEventListener('click', ()=>{
+      const q = gatherQuery();
+      if(!q){
+        flashResult(`<div class="center muted">Enter or dictate a question/symptoms first.</div>`);
+        return;
+      }
+      flashResult(`<div class="center">Analyzing…</div>`);
+      // simulate small delay
+      setTimeout(()=>{
+        const results = searchAll(q);
+        renderResults(results, q);
+      }, 200);
+    });
+
+    /* ============================================================
+       INIT CPR/CONTACTS PREVIEW
+       ============================================================ */
+    showCPR();
+
+    /* ============================================================
+       ACCESSIBILITY & SMALL UX NITS
+       ============================================================ */
+    // Press Enter (without Shift) in textarea to submit
+    $('#inputText').addEventListener('keypress', (e)=>{
+      if(e.key==='Enter' && !e.shiftKey){
+        e.preventDefault();
+        $('#submitBtn').click();
+      }
+    });
+
+  </script>
 </body>
 </html>
